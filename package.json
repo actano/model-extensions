@@ -1,7 +1,11 @@
 {
   "name": "model-extensions",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "repository": "git://github.com/actano/model-extensions.git",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha --compilers coffee:coffee-script/register --recursive test"
+  },
   "devDependencies": {
     "coffee-script": "~1.9.1",
     "chai": "~2.1.2",
