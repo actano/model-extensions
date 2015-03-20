@@ -1,7 +1,7 @@
 {expect} = require 'chai'
 sinon = require 'sinon'
 
-{Model, PostSetAction} = require '../lib/index'
+{Model, PostSetAction} = require '../src/index'
 
 class SimpleModel
 
