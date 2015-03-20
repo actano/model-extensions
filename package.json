@@ -4,7 +4,8 @@
   "repository": "git://github.com/actano/model-extensions.git",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha --compilers coffee:coffee-script/register --recursive test"
+    "test": "mocha --compilers coffee:coffee-script/register --recursive test",
+    "prepublish": "coffee -o lib -c src/*.coffee"
   },
   "devDependencies": {
     "coffee-script": "~1.9.1",
