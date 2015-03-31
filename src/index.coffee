@@ -21,7 +21,8 @@ getGetterName = (propertyName) ->
 getPropertyNameOfSetter = (setterName) ->
     return lowercaseFirstLetter(setterName.slice(3))
 
-Model = (prototype) ->
+Model = (ModelClass) ->
+    prototype = ModelClass.prototype
 
     listSortedPropertyNames = ->
         propertyNames = []
@@ -82,7 +83,8 @@ Model = (prototype) ->
 
     return prototype
 
-PostSetAction = (prototype, action) ->
+PostSetAction = (ModelClass, action) ->
+    prototype = ModelClass.prototype
 
     listSetterNames = ->
         setterNames = []

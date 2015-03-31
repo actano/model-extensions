@@ -29,16 +29,16 @@ class ExtendingModel extends SimpleModel
     constructor: (propertyMap = {}) ->
         super
 
-expectFunction = (clazz, funcName) ->
-    func = clazz.prototype[funcName]
+expectFunction = (ModelClass, funcName) ->
+    func = ModelClass.prototype[funcName]
     expect(func, "expected #{funcName} to exist").to.be.defined
     expect(func, "expected #{funcName} to be a function").to.be.instanceOf Function
 
 describe "model-extensions", ->
 
-    Model(SimpleModel.prototype)
-    Model(ComplexModel.prototype)
-    Model(ExtendingModel.prototype)
+    Model(SimpleModel)
+    Model(ComplexModel)
+    Model(ExtendingModel)
 
     describe "Model", ->
 
@@ -115,8 +115,8 @@ describe "model-extensions", ->
     describe "PostSetAction", ->
 
         spy = sinon.spy()
-        PostSetAction(SimpleModel.prototype, spy)
-        PostSetAction(ExtendingModel.prototype, spy)
+        PostSetAction(SimpleModel, spy)
+        PostSetAction(ExtendingModel, spy)
 
         beforeEach ->
             spy.reset()
