@@ -124,6 +124,48 @@ describe "model-extensions", ->
                 expect(cloneModel.attr2()).to.equal "testvalue2"
                 expect(cloneModel.attr3()).to.equal 1337
 
+            it 'should be independent of original instance', ->
+                model = new ExtendingModel()
+                cloneModel = model.clone()
+
+                cloneModel.attr3('newtestvalue')
+                expect(cloneModel.attr3()).to.not.equal model.attr3()
+
+            it.skip 'should handle null and undefined value', ->
+                model = new ExtendingModel()
+                model.attr1 null
+                console.log model._attr1
+                model.attr2 undefined
+                cloneModel = model.clone()
+
+                expect(cloneModel.attr1()).to.be.null
+                expect(cloneModel.attr1()).to.be.undefined
+
+            it 'should handle simple arrays', ->
+                # TODO
+
+            it "should deep clone and not keep a reference to the original properties", ->
+                model = new ExtendingModel()
+                objectToClone =
+                    nest:
+                        first: 1
+                        second: 2
+                    notnest: 'animal'
+
+                model.attr3 objectToClone
+
+                cloneModel = model.clone()
+
+                expect(cloneModel.attr3()).to.deep.equal objectToClone
+                expect(cloneModel.attr3()).to.not.equal objectToClone
+
+            it.skip "should return an instance of the model class", ->
+                # TODO
+
+            it.skip "should call default constructor", ->
+                # TODO
+
+
     describe "PostSetAction", ->
 
         spy = sinon.spy()

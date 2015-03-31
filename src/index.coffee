@@ -77,7 +77,8 @@ Model = (ModelClass) ->
             propertyNames = listSortedPropertyNames()
             cloneModel = new ModelClass
             for propertyName in propertyNames
-                cloneModel["_#{propertyName}"] = @["_#{propertyName}"]
+                cloneModel["_#{propertyName}"] = JSON.parse JSON.stringify @["_#{propertyName}"]
+
 
             return cloneModel
 
