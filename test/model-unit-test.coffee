@@ -111,6 +111,18 @@ describe "model-extensions", ->
             model._attr1 = "test"
             expect(model.attr1()).to.equal("test")
 
+        describe 'clone', ->
+
+            it "should clone attribute values", ->
+                model = new ExtendingModel()
+                model.attr1 "testvalue1"
+                model.attr2 "testvalue2"
+                model.attr3 1337
+                cloneModel = model.clone()
+
+                expect(cloneModel.attr1()).to.equal "testvalue1"
+                expect(cloneModel.attr2()).to.equal "testvalue2"
+                expect(cloneModel.attr3()).to.equal 1337
 
     describe "PostSetAction", ->
 

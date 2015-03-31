@@ -71,6 +71,17 @@ Model = (ModelClass) ->
                 propertyMap[propertyName] = propertyValue
             propertyMap
 
+    createClone = ->
+        prototype.clone = ->
+            propertyMap = {}
+            propertyNames = listSortedPropertyNames()
+            cloneModel = new ModelClass
+            for propertyName in propertyNames
+                cloneModel["_#{propertyName}"] = @["_#{propertyName}"]
+
+            return cloneModel
+
+
     propertyNames = listSortedPropertyNames(prototype)
 
     for propertyName in propertyNames
@@ -80,6 +91,7 @@ Model = (ModelClass) ->
             createProperty(propertyName)
     createFromMap()
     createToMap()
+    createClone()
 
     return prototype
 
