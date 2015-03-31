@@ -4,6 +4,9 @@ capitalizeFirstLetter = (string) ->
 lowercaseFirstLetter = (string) ->
     return string.charAt(0).toLowerCase() + string.slice 1
 
+removeFirstLetter = (string) ->
+    string.slice(1)
+
 startsWith = (candidate, query) ->
     return candidate.indexOf(query) == 0
 
@@ -24,7 +27,7 @@ Model = (prototype) ->
         propertyNames = []
         for propertyKey, propertyValue of prototype
             unless propertyValue instanceof Function
-                propertyNames.push propertyKey.substr(1)
+                propertyNames.push removeFirstLetter propertyKey
         propertyNames = propertyNames.sort()
         return propertyNames
 
