@@ -1,25 +1,25 @@
-capitalizeFirstLetter = (string) ->
+uppercaseFirstChar = (string) ->
     return string.charAt(0).toUpperCase() + string.slice 1
 
-lowercaseFirstLetter = (string) ->
+lowercaseFirstChar = (string) ->
     return string.charAt(0).toLowerCase() + string.slice 1
 
-removeFirstLetter = (string) ->
+removeFirstChar = (string) ->
     string.slice(1)
 
 startsWith = (candidate, query) ->
     return candidate.indexOf(query) == 0
 
 getSetterName = (propertyName) ->
-    upperCasePropertyName = capitalizeFirstLetter propertyName
+    upperCasePropertyName = uppercaseFirstChar propertyName
     return 'set' + upperCasePropertyName
 
 getGetterName = (propertyName) ->
-    upperCasePropertyName = capitalizeFirstLetter propertyName
+    upperCasePropertyName = uppercaseFirstChar propertyName
     return 'get' + upperCasePropertyName
 
 getPropertyNameOfSetter = (setterName) ->
-    return lowercaseFirstLetter(setterName.slice(3))
+    return lowercaseFirstChar(setterName.slice(3))
 
 Model = (prototype) ->
 
@@ -27,7 +27,7 @@ Model = (prototype) ->
         propertyNames = []
         for propertyKey, propertyValue of prototype
             unless propertyValue instanceof Function
-                propertyNames.push removeFirstLetter propertyKey
+                propertyNames.push removeFirstChar propertyKey
         propertyNames = propertyNames.sort()
         return propertyNames
 
