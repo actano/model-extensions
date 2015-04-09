@@ -111,6 +111,13 @@ describe 'model-extensions', ->
             model._attr1 = 'test'
             expect(model.attr1()).to.equal('test')
 
+        it 'should set properties when calling fromMapBypassSetters', ->
+            model = new SimpleModel()
+            model.fromMapBypassSetters({ attr1: 1, attr2: 2 })
+            expect(model._attr1).to.equal(1)
+            expect(model._attr2).to.equal(2)
+
+
 
     describe 'PostSetAction', ->
 
