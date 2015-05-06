@@ -47,9 +47,10 @@ Model = (prototype) ->
         prototype.fromMap = (propertyMap = {}) ->
             propertyNames = listSortedPropertyNames()
             for propertyName in propertyNames
-                propertyValue = propertyMap[propertyName]
-                setterName = getSetterName(propertyName)
-                @[setterName](propertyValue) if propertyValue?
+                if propertyName of propertyMap
+                    propertyValue = propertyMap[propertyName]
+                    setterName = getSetterName(propertyName)
+                    @[setterName](propertyValue)
             return
 
     createToMap = ->
@@ -66,8 +67,9 @@ Model = (prototype) ->
         prototype.fromMapBypassSetters = (propertyMap = {}) ->
             propertyNames = listSortedPropertyNames()
             for propertyName in propertyNames
-                propertyValue = propertyMap[propertyName]
-                @["_#{propertyName}"] = propertyValue if propertyValue?
+                if propertyName of propertyMap
+                    propertyValue = propertyMap[propertyName]
+                    @["_#{propertyName}"] = propertyValue
             return
 
     propertyNames = listSortedPropertyNames(prototype)

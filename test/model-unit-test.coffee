@@ -29,6 +29,16 @@ class ExtendingModel extends SimpleModel
     constructor: (propertyMap = {}) ->
         super
 
+class ModelWithDefaultValues
+
+    _attr1: null
+    _attr2: null
+
+    constructor: (propertyMap) ->
+        @_attr1 = 10
+        @_attr2 = 10
+        @fromMap(propertyMap)
+
 expectFunction = (clazz, funcName) ->
     func = clazz.prototype[funcName]
     expect(func, "expected #{funcName} to exist").to.be.defined
@@ -39,6 +49,7 @@ describe 'model-extensions', ->
     Model(SimpleModel.prototype)
     Model(ComplexModel.prototype)
     Model(ExtendingModel.prototype)
+    Model(ModelWithDefaultValues.prototype)
 
     describe 'Model', ->
 
@@ -111,13 +122,19 @@ describe 'model-extensions', ->
             model._attr1 = 'test'
             expect(model.attr1()).to.equal('test')
 
+        it 'should initialize values from the given map', ->
+            model = new ModelWithDefaultValues
+                attr1: 42
+                attr2: null
+
+            expect(model.attr1()).to.equal 42
+            expect(model.attr2()).to.be.null
+
         it 'should set properties when calling fromMapBypassSetters', ->
-            model = new SimpleModel()
-            model.fromMapBypassSetters({ attr1: 1, attr2: 2 })
+            model = new ModelWithDefaultValues()
+            model.fromMapBypassSetters({ attr1: 1, attr2: null })
             expect(model._attr1).to.equal(1)
-            expect(model._attr2).to.equal(2)
-
-
+            expect(model._attr2).to.be.null
 
     describe 'PostSetAction', ->
 
