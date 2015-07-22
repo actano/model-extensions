@@ -1,35 +1,25 @@
 lowercaseFirstChar = (string) ->
-    return string.charAt(0).toLowerCase() + string.slice 1
+    string.charAt(0).toLowerCase() + string.slice 1
 
 getPropertyNameOfSetter = (setterName) ->
-    return lowercaseFirstChar(setterName.slice(3))
+    lowercaseFirstChar setterName.slice 3
 
-startsWith = (candidate, query) ->
-    return candidate.indexOf(query) == 0
+startsWith = (string, prefix) ->
+    string.indexOf(prefix) is 0
 
-
-PostSetAction = (prototype, action) ->
-
-    listSetterNames = ->
-        setterNames = []
-        for propertyKey, propertyValue of prototype
-            if startsWith(propertyKey, "set")
-                setterNames.push(propertyKey)
-        setterNames
-
-    postExtendSetter = (setterName, extension) ->
+PostSetAction = (prototype, postSetHook) ->
+    extendSetter = (setterName) ->
         originalSetter = prototype[setterName]
-        prototype[setterName] = (newValue) ->
-            propertyName = getPropertyNameOfSetter(setterName)
-            oldValue = @["_#{propertyName}"]
-            originalSetter.apply(this, [newValue])
-            extension.apply(this, [propertyName, newValue, oldValue])
-            return newValue
+        prototype[setterName] = (value) ->
+            propertyName = getPropertyNameOfSetter setterName
+            oldValue = this["_#{propertyName}"]
+            originalSetter.call this, value
+            postSetHook.call this, propertyName, value, oldValue
+            value
 
-    for setterName in listSetterNames()
-        do (setterName) ->
-            postExtendSetter(setterName, action)
+    for setterName of prototype when startsWith setterName, 'set'
+        extendSetter setterName
 
-    return prototype
+    prototype
 
 module.exports.PostSetAction = PostSetAction

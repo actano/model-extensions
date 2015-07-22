@@ -1,88 +1,61 @@
+removeFirstChar = (string) ->
+    string.slice 1
+
 uppercaseFirstChar = (string) ->
-    return string.charAt(0).toUpperCase() + string.slice 1
+    string.charAt(0).toUpperCase() + removeFirstChar string
 
 getSetterName = (propertyName) ->
-    upperCasePropertyName = uppercaseFirstChar propertyName
-    return 'set' + upperCasePropertyName
+    "set#{uppercaseFirstChar propertyName}"
 
 getGetterName = (propertyName) ->
-    upperCasePropertyName = uppercaseFirstChar propertyName
-    return 'get' + upperCasePropertyName
-
-removeFirstChar = (string) ->
-    string.slice(1)
+    "get#{uppercaseFirstChar propertyName}"
 
 Model = (prototype) ->
-
-    listSortedPropertyNames = ->
-        propertyNames = []
-        for propertyKey, propertyValue of prototype
-            unless propertyValue instanceof Function
-                propertyNames.push removeFirstChar propertyKey
-        propertyNames = propertyNames.sort()
-        return propertyNames
+    propertyNames = for propertyKey of prototype when propertyKey.charAt(0) is '_'
+        removeFirstChar propertyKey
+    propertyNames = propertyNames.sort()
 
     createSetterIfNeeded = (propertyName) ->
-        setterName = getSetterName(propertyName)
-        unless prototype[setterName]
-            prototype[setterName] = (value) ->
-                @["_#{propertyName}"] = value
-        prototype[setterName]
+        prototype[getSetterName propertyName] ?= (value) ->
+            this["_#{propertyName}"] = value
 
     createGetterIfNeeded = (propertyName) ->
-        getterName = getGetterName(propertyName)
-        unless prototype[getterName]
-            prototype[getterName] = (value) ->
-                @["_#{propertyName}"]
-        prototype[getterName]
+        prototype[getGetterName propertyName] ?= (value) ->
+            this["_#{propertyName}"]
 
     createProperty = (propertyName) ->
         prototype[propertyName] = (value) ->
-            if (arguments.length > 0)
-                @[getSetterName(propertyName)](value)
+            if arguments.length > 0
+                this[getSetterName propertyName] value
             else
-                @[getGetterName(propertyName)]()
+                this[getGetterName propertyName]()
 
     createFromMap = ->
         prototype.fromMap = (propertyMap = {}) ->
-            propertyNames = listSortedPropertyNames()
-            for propertyName in propertyNames
-                if propertyName of propertyMap
-                    propertyValue = propertyMap[propertyName]
-                    setterName = getSetterName(propertyName)
-                    @[setterName](propertyValue)
-            return
+            for propertyName in propertyNames when propertyName of propertyMap
+                this[getSetterName propertyName] propertyMap[propertyName]
 
     createToMap = ->
         prototype.toMap = ->
             propertyMap = {}
-            propertyNames = listSortedPropertyNames()
             for propertyName in propertyNames
-                getterName = getGetterName(propertyName)
-                propertyValue = @[getterName]()
-                propertyMap[propertyName] = propertyValue
+                propertyMap[propertyName] = this[getGetterName propertyName]()
             propertyMap
 
     createFromMapBypassSetters = ->
         prototype.fromMapBypassSetters = (propertyMap = {}) ->
-            propertyNames = listSortedPropertyNames()
-            for propertyName in propertyNames
-                if propertyName of propertyMap
-                    propertyValue = propertyMap[propertyName]
-                    @["_#{propertyName}"] = propertyValue
-            return
-
-    propertyNames = listSortedPropertyNames(prototype)
+            for propertyName in propertyNames when propertyName of propertyMap
+                this["_#{propertyName}"] = propertyMap[propertyName]
 
     for propertyName in propertyNames
-        do (propertyName) ->
-            createGetterIfNeeded(propertyName)
-            createSetterIfNeeded(propertyName)
-            createProperty(propertyName)
+        createGetterIfNeeded propertyName
+        createSetterIfNeeded propertyName
+        createProperty propertyName
+
     createFromMap()
     createToMap()
     createFromMapBypassSetters()
 
-    return prototype
+    prototype
 
-module.exports.Model = Model
+exports.Model = Model
