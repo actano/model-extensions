@@ -4,10 +4,10 @@ removeFirstChar = (string) ->
 uppercaseFirstChar = (string) ->
     string.charAt(0).toUpperCase() + removeFirstChar string
 
-getSetterName = (propertyName) ->
+exports.getSetterName = getSetterName = (propertyName) ->
     "set#{uppercaseFirstChar propertyName}"
 
-getGetterName = (propertyName) ->
+exports.getGetterName = getGetterName = (propertyName) ->
     "get#{uppercaseFirstChar propertyName}"
 
 Model = (prototype) ->
