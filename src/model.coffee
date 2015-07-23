@@ -11,7 +11,7 @@ exports.getGetterName = getGetterName = (propertyName) ->
     "get#{uppercaseFirstChar propertyName}"
 
 Model = (prototype) ->
-    propertyNames = for propertyKey of prototype when propertyKey.charAt(0) is '_'
+    propertyNames = for propertyKey, propertyValue of prototype when propertyValue not instanceof Function
         removeFirstChar propertyKey
     propertyNames = propertyNames.sort()
 
