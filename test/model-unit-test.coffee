@@ -135,27 +135,40 @@ describe 'model-extensions', ->
         PostSetAction SimpleModel.prototype, spy
         PostSetAction ExtendingModel.prototype, spy
 
+        expectSpyToBeCalledWith = (postSetProperty, oldValues) ->
+            lastSpyCallArgs = spy.lastCall.args
+            expect(lastSpyCallArgs[0]).to.equal postSetProperty
+            expect(lastSpyCallArgs[1]).to.deep.equal oldValues
+
         beforeEach ->
             spy.reset()
 
         it 'should call the post set action', ->
             model = new SimpleModel()
+
             model.setAttr1 1
             expect(model._attr1).to.equal 1
-            expect(spy.calledWith 'attr1', 1, null).to.be.true
+            expectSpyToBeCalledWith 'attr1', attr1: null, attr2: null
+
             model.setAttr2 2
             expect(model._attr2).to.equal 2
-            expect(spy.calledWith 'attr2', 2, null).to.be.true
+            expectSpyToBeCalledWith 'attr2', attr1: 1, attr2: null
+
             model.setAttr2 3
-            expect(spy.calledWith 'attr2', 3, 2).to.be.true
+            expect(model._attr2).to.equal 3
+            expectSpyToBeCalledWith 'attr2', attr1: 1, attr2: 2
 
         it 'should call the post set action in sub class', ->
             model = new ExtendingModel()
+
             model.setAttr1 1
             expect(model._attr1).to.equal 1
-            expect(spy.calledWith 'attr1', 1, null).to.be.true
+            expectSpyToBeCalledWith 'attr1', attr1: null, attr2: null, attr3: null
+
             model.setAttr3 2
             expect(model._attr3).to.equal 2
-            expect(spy.calledWith 'attr3', 2, null).to.be.true
+            expectSpyToBeCalledWith 'attr3', attr1: 1, attr2: null, attr3: null
+
             model.setAttr3 3
-            expect(spy.calledWith 'attr3', 3, 2).to.be.true
+            expect(model._attr3).to.equal 3
+            expectSpyToBeCalledWith 'attr3', attr1: 1, attr2: null, attr3: 2
