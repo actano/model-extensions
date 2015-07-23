@@ -6,6 +6,7 @@ sinon = require 'sinon'
 class SimpleModel
     _attr1: null
     _attr2: null
+    _func: ->
 
     constructor: (propertyMap) ->
         @fromMap propertyMap
@@ -37,7 +38,7 @@ class ModelWithDefaultValues
 
 expectFunction = (clazz, funcName) ->
     func = clazz.prototype[funcName]
-    expect(func, "expected #{funcName} to exist").to.be.defined
+    expect(func, "expected #{funcName} to exist").to.exist
     expect(func, "expected #{funcName} to be a function").to.be.instanceOf Function
 
 describe 'model-extensions', ->
@@ -52,6 +53,10 @@ describe 'model-extensions', ->
             expectFunction SimpleModel, 'setAttr1'
             expectFunction SimpleModel, 'getAttr2'
             expectFunction SimpleModel, 'setAttr2'
+
+        it 'should not create getter and setter methods for functions', ->
+            expect(SimpleModel.prototype.getFunc, "expected getFunc not exist").to.not.exist
+            expect(SimpleModel.prototype.setFunc, "expected setFunc not exist").to.not.exist
 
         it 'should create from and to map methods', ->
             expectFunction SimpleModel, 'fromMap'
