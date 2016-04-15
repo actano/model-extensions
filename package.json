@@ -1,6 +1,7 @@
 {
   "name": "model-extensions",
   "version": "0.3.0",
+  "license": "MIT",
   "repository": "git://github.com/actano/model-extensions.git",
   "main": "lib/index.js",
   "scripts": {
