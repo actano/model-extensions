@@ -1,6 +1,0 @@
-{
-  "name": "model-extensions",
-  "repository": "actano/model-extensions",
-  "version": "0.3.0",
-  "scripts": ["lib/index.js", "lib/model.js", "lib/postsetaction.js"]
-}
