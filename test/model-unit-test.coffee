@@ -129,11 +129,36 @@ describe 'model-extensions', ->
             expect(model.attr1()).to.equal 42
             expect(model.attr2()).to.be.null
 
-        it 'should set properties when calling fromMapBypassSetters', ->
-            model = new ModelWithDefaultValues()
-            model.fromMapBypassSetters attr1: 1, attr2: null
-            expect(model._attr1).to.equal 1
-            expect(model._attr2).to.be.null
+        describe 'properties for which accessors are created', ->
+            class AccessorModel
+                _accessorProperty: null
+                _anotherAccessorProperty: 1
+                otherProperty: 5
+
+            Model AccessorModel.prototype
+
+            it 'should create accessors for properties starting with underscore', ->
+                modelInstance = new AccessorModel()
+
+                expect(modelInstance.accessorProperty).to.be.a 'function'
+
+            it 'should not create accessors for properties not starting with underscore', ->
+                modelInstance = new AccessorModel
+                    otherProperty: 6
+
+                expect(modelInstance.otherProperty).not.to.be.a 'function'
+                expect(modelInstance.therProperty).not.to.be.a 'function'
+
+            it 'should set properties when calling fromMapBypassSetters', ->
+                model = new AccessorModel()
+                model.fromMapBypassSetters accessorProperty: 1, anotherAccessorProperty: null
+                expect(model._accessorProperty).to.equal 1
+                expect(model._anotherAccessorProperty).to.be.null
+
+            it 'should not set properties which don\'t have accessors when calling fromMapBypassSetters', ->
+                model = new AccessorModel()
+                model.fromMapBypassSetters otherProperty: 6
+                expect(model.otherProperty).to.equal 5
 
     describe 'PostSetAction', ->
         spy = sinon.spy()

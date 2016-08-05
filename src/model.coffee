@@ -10,10 +10,18 @@ exports.getSetterName = getSetterName = (propertyName) ->
 exports.getGetterName = getGetterName = (propertyName) ->
     "get#{uppercaseFirstChar propertyName}"
 
-Model = (prototype) ->
-    propertyNames = for propertyKey, propertyValue of prototype when propertyValue not instanceof Function
-        removeFirstChar propertyKey
+isPropertyForAccessorCreation = (propertyName, propertyValue) ->
+    return (propertyValue not instanceof Function) and (propertyName.charAt(0) is '_')
+
+getPropertiesForAccessorCreation = (prototype) ->
+    propertyNames = for propertyName, propertyValue of prototype when isPropertyForAccessorCreation(propertyName, propertyValue)
+        removeFirstChar propertyName
     propertyNames = propertyNames.sort()
+
+    return propertyNames
+
+Model = (prototype) ->
+    propertiesWithAccessors = getPropertiesForAccessorCreation prototype
 
     createSetterIfNeeded = (propertyName) ->
         prototype[getSetterName propertyName] ?= (value) ->
@@ -32,22 +40,22 @@ Model = (prototype) ->
 
     createFromMap = ->
         prototype.fromMap = (propertyMap = {}) ->
-            for propertyName in propertyNames when propertyName of propertyMap
+            for propertyName in propertiesWithAccessors when propertyName of propertyMap
                 this[getSetterName propertyName] propertyMap[propertyName]
 
     createToMap = ->
         prototype.toMap = ->
             propertyMap = {}
-            for propertyName in propertyNames
+            for propertyName in propertiesWithAccessors
                 propertyMap[propertyName] = this[getGetterName propertyName]()
             propertyMap
 
     createFromMapBypassSetters = ->
         prototype.fromMapBypassSetters = (propertyMap = {}) ->
-            for propertyName in propertyNames when propertyName of propertyMap
+            for propertyName in propertiesWithAccessors when propertyName of propertyMap
                 this["_#{propertyName}"] = propertyMap[propertyName]
 
-    for propertyName in propertyNames
+    for propertyName in propertiesWithAccessors
         createGetterIfNeeded propertyName
         createSetterIfNeeded propertyName
         createProperty propertyName
