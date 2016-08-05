@@ -9,9 +9,9 @@
     "prepublish": "coffee -o lib -c src/*.coffee"
   },
   "devDependencies": {
-    "coffee-script": "~1.9.1",
-    "chai": "~2.1.2",
-    "mocha": "~2.2.1",
-    "sinon": "~1.14.1"
+    "coffee-script": "^1.9.3",
+    "chai": "^3.5.0",
+    "mocha": "^2.2.5",
+    "sinon": "^1.17.4"
   }
 }
